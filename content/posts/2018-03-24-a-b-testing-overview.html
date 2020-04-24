@@ -1,0 +1,266 @@
+---
+title: A/B Testing Overview
+author: Pedram Navid
+date: "2018-03-24"
+slug: a-b-testing-overview
+categories: []
+tags:
+  - methods
+  - r
+description: The purpose of A/B testing is to determine through the use
+  of statistical methods whether an experiment generates enough
+  of a practically significant effect to support implementation.
+---
+
+<div id="overview-and-definitions" class="section level2">
+  <h2>Overview and Definitions</h2>
+  <p>
+    The purpose of A/B testing is to determine through the use of statistical
+    methods whether an experiment generates enough of a practically significant
+    effect to support implementation.
+  </p>
+  <p>
+    This is not as simple as seeing if the rates of two different groups are
+    different, because of the inherent randomness in sampling from a population.
+  </p>
+  <!--more-->
+  <p>Consider this toy example:</p>
+  <pre class="r"><code>library(scales)
+set.seed(1234)
+pop_1 &lt;- rnorm(100, 0, 1)
+pop_2 &lt;- rnorm(100, 0, 1)
+
+paste(&quot;The mean of pop_1 is: &quot;, comma(mean(pop_1)))</code></pre>
+  <pre><code>## [1] &quot;The mean of pop_1 is:  -0.1567617&quot;</code></pre>
+  <pre
+    class="r"
+  ><code>paste(&quot;The mean of pop_2 is: &quot;, comma(mean(pop_2)))</code></pre>
+  <pre><code>## [1] &quot;The mean of pop_2 is:  0.04124318&quot;</code></pre>
+  <p>
+    Even though both these samples where taken from a population with mean 0 and
+    standard deviation 1, the mean of both populations appears different.
+  </p>
+  <p>Shown graphically:</p>
+  <pre class="r"><code>library(ggplot2)
+library(dplyr)
+df &lt;- data_frame(p1 = pop_1, p2 = pop_2)
+ggplot(df) +
+  geom_density(aes(p1, color = &#39;pop_1&#39;)) +
+  geom_density(aes(p2, color = &#39;pop_2&#39;))</code></pre>
+  <p>
+    <img
+      src="/post/2018-03-24-a-b-testing-overview_files/figure-html/unnamed-chunk-2-1.png"
+      width="672"
+    />
+  </p>
+  <p>
+    That difference is due to chance, and not because of an inherent difference
+    in the population of the two samples. A/B Testing is all about trying to
+    detect whether we’ve been able to have an effect on the population and to
+    tease apart the size of that effect, if it exists.
+  </p>
+</div>
+<div id="a-little-demo" class="section level2">
+  <h2>A Little Demo</h2>
+  <p>
+    Let’s pretend we are running a website that has made a change to the
+    shopping cart checkout process. We want to know if the change we’ve
+    introduced to a subset of our visitors has made a signficant enough change
+    to warrant implementing on our site.
+  </p>
+  <p>
+    Let $n = $ <em>the number of unique visitors to our site</em>, and $X = $
+    <em>the number of unique visitors that placed an order</em>.
+  </p>
+  <p>
+    Then <span class="math inline">\(\hat{p} = X / n\)</span> is the probability
+    of a checkout for a unique visitor.
+  </p>
+  <p>
+    The distribution of this event is binomial, so a unique visitor will have
+    had a checkout (a success) or not (a failure).
+  </p>
+  <p>
+    Because these events are independent and identically distributed, we should
+    be able to compare our control-group (the website without change) with our
+    experimental-group (the website following a change) to see whether there is
+    a significant difference.
+  </p>
+  <p>
+    If we assume a binomial distribution with a sufficient sample size, then we
+    can use the normal distributions Z-scores along with the standard error to
+    help calculate a margin of error.
+  </p>
+  <p>
+    A margin of error gives us the confidence interval for a point estimate.
+    Because we are pulling a sample from a population, we can give a range for
+    our point estimate with a certain level of confidence, say 95%.
+  </p>
+  <p>
+    What this means is that 95% of the time, the actual population mean will be
+    within the confidence interval we provided, assuming a normal distribution
+    (of course).
+  </p>
+  <p>
+    Our margin of error is <span class="math inline">\(m = Z * SE\)</span> and
+    <span class="math inline"
+      >\(SE = \sqrt{\frac{\hat{p}(1 - \hat{p})}{N}}\)</span
+    >
+    Our confidence interval would then be our sample estimate +/- the margin of
+    error.
+  </p>
+  <p>We’ll walk through a real example to help illustrate this now.</p>
+</div>
+<div id="sample-distributions" class="section level2">
+  <h2>Sample Distributions</h2>
+  <p>
+    Before running our experiment, our web-team provided us with these numbers
+    for the previous month. This is only to get us familiar with some concepts,
+    and we’ll be performing the actual test next month, so the results aren’t as
+    important as the concepts here.
+  </p>
+  <p>
+    We had 20,000 unique visitors, and of those 20,000 unique visitors, 3,000 of
+    them placed an order. We’d like to know what the probability of any unique
+    visitor placing an order is.
+  </p>
+  <pre class="r"><code>library(scales)
+x = 3000
+n = 20000
+p_hat &lt;- x / n
+paste(&quot;Probability of an order for a given unique customer:&quot;, p_hat)</code></pre>
+  <pre><code>## [1] &quot;Probability of an order for a given unique customer: 0.15&quot;</code></pre>
+  <p>
+    The point-estimate is 15%, but what is the margin of error for this
+    estimate? Our 20,000 unique visitors is only a sample of the entire
+    population, so let’s calculate our confidence interval, at 95% confidence.
+  </p>
+  <pre class="r"><code>SE = sqrt(p_hat * (1 - p_hat) / n)
+m = qnorm(1 - 0.025) * SE # 2.5% with two-tails gives us 95% confidence
+lower = p_hat - m
+upper = p_hat + m
+paste(&quot;Lower bound: &quot;, percent(lower),
+      &quot;Upper bound: &quot;, percent(upper))</code></pre>
+  <pre><code>## [1] &quot;Lower bound:  14.5% Upper bound:  15.5%&quot;</code></pre>
+  <p>
+    Our estimate for the true probability of an order, with 95% confidence, is
+    14.5% to 15.5%.
+  </p>
+</div>
+<div id="hypothesis-testing" class="section level2">
+  <h2>Hypothesis Testing</h2>
+  <p>
+    Now that we understand confidence intervals, let’s perform our experiment
+    and see if our experiment performs better than a control.
+  </p>
+  <p>
+    The following month the web team gives us this data. The control group is
+    the website without any modifications, the experiment group is the website
+    with a change. Note how both groups have different size populations? This is
+    very common with web-traffic experiments.
+  </p>
+  <p><span class="math display">\[X_{control} = 974\]</span></p>
+  <p><span class="math display">\[N_{control} = 10,072\]</span></p>
+  <p><span class="math display">\[X_{experiment} = 9,886\]</span></p>
+  <p><span class="math display">\[N_{experiment} = 1,242\]</span></p>
+  <p>
+    We’ll need the stanard error for these two measures. One easy way to get the
+    standard error is to pool the results together and get an overall
+    probability of a click, and use that number to get what is called a pooled
+    standard error.
+  </p>
+  <p>
+    The pooled probability
+    <span class="math inline">\(\hat{p}_{pool}\)</span> is the overall
+    probability of a click across both control and experiments:
+    <span class="math inline">\(\frac{974 + 1242}{10072 + 9886}\)</span>.
+  </p>
+  <pre class="r"><code>x_ctrl &lt;- 974
+n_ctrl &lt;- 10072
+x_exp &lt;- 1241
+n_exp &lt;- 9886
+p_pool = (x_ctrl + x_exp) / (n_ctrl + n_exp)
+p_pool</code></pre>
+  <pre><code>## [1] 0.1109831</code></pre>
+  <p>The standard error of the pool is:</p>
+  <p>
+    <span class="math display"
+      >\[ \sqrt{\hat{P}_{pool} * (1 - \hat{P}_{pool}) * (\frac{1}{N_{ctrl}} +
+      \frac{1}{Nexp})} \]</span
+    >
+  </p>
+  <pre class="r"><code>SEpool = sqrt(p_pool * (1-p_pool) * (1/n_exp + 1/n_ctrl))
+SEpool</code></pre>
+  <pre><code>## [1] 0.004447067</code></pre>
+  <p>
+    Now that we have the standard error, we can calculate our point estimates
+    for the two different groups, and use the standard error to generate
+    confidence intervals. If the estimates are within the confidence intervals
+    of each other then we’ll have to conclude our experiment had no observable
+    effect. If, however, the bounds of the confidence intervals are separated,
+    then we’ll be able to say with a certain degree of confidence that there is
+    a measurable effect.
+  </p>
+  <p>
+    In other words, we’re looking at two distributions, $ d_{experiment} $ and $
+    d_{control} $, and calculating whether $ = d_{experiment} - d_{control} = 0
+    $, where $ $ is the difference between the two distributions.
+  </p>
+  <pre class="r"><code># Point estimates for experiment and control
+p_exp = x_exp / n_exp
+p_ctrl = x_ctrl / n_ctrl
+
+# Difference between the two
+d_hat = p_exp - p_ctrl
+percent(d_hat)</code></pre>
+  <pre><code>## [1] &quot;2.88%&quot;</code></pre>
+  <p>
+    The difference between our experiment and control is an increase of 2.88%.
+    Let’s compute the margin of error using the standard error.
+  </p>
+  <pre class="r"><code>m = qnorm(1 - 0.025) * SEpool
+paste(&quot;Lower bound:&quot;, percent(d_hat - m),
+       &quot;Upper bound:&quot;, percent(d_hat + m))</code></pre>
+  <pre><code>## [1] &quot;Lower bound: 2.01% Upper bound: 3.75%&quot;</code></pre>
+  <p>
+    With 95% confidence, we can say that there was an increase of 2.0% to 3.8%
+    following this experiment. Since the margin of error is a safe distance away
+    from 0%, we can conclude with some confidence that our experiment is a
+    success.
+  </p>
+</div>
+<div id="the-easy-way" class="section level2">
+  <h2>The Easy Way</h2>
+  <p>
+    What if we didn’t remember all these formulas but still wanted an answer?
+    Let’s try to see if we can replicate what we just did
+  </p>
+  <pre
+    class="r"
+  ><code>prop.test(c(x_exp, x_ctrl), c(n_exp, n_ctrl), p = NULL)</code></pre>
+  <pre><code>## 
+##  2-sample test for equality of proportions with continuity
+##  correction
+## 
+## data:  c(x_exp, x_ctrl) out of c(n_exp, n_ctrl)
+## X-squared = 41.729, df = 1, p-value = 1.049e-10
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  0.02001096 0.03764369
+## sample estimates:
+##     prop 1     prop 2 
+## 0.12553105 0.09670373</code></pre>
+  <p>
+    There we go, in one line we’ve tested whether the two groups have the same
+    probability as our null hypothesis. Our alternative hypothesis is that there
+    is a statistically significant difference between the two.
+  </p>
+  <p>
+    Looking at the summary results, we can see that the p-value is practically
+    0, which means there’s a very low likelihood of seeing a difference that big
+    merely due to chance. Further, we can see the confidence interval of the
+    difference between the two groups to be between 2.0% and 3.8%, matching our
+    results above. The sample estimates for each population is also given, with
+    our experimental group at 12.6% and our control group at 9.7%.
+  </p>
+</div>
