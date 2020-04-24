@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pedramnavid.me</title>
+    <link>/</link>
+    <description>Recent content on pedramnavid.me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 23 Apr 2020 20:29:11 -0700</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2020 04 23 Model Manager</title>
+      <link>/posts/2020-04-23-model-manager/</link>
+      <pubDate>Thu, 23 Apr 2020 20:29:11 -0700</pubDate>
+      
+      <guid>/posts/2020-04-23-model-manager/</guid>
+      <description>Model Manager </description>
+    </item>
+    
+    <item>
+      <title>Model Manager</title>
+      <link>/posts/model-manager/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/model-manager/</guid>
+      <description>Finding a way to get models into production seems like a universal problem these days. 1.75 billion results as of last count, with countless companies devoted to solving this in one way or another.
+The Problem At Windfall, we used a variety of models built by data scientists to drive our products. The problem was that different people had slightly different ways of building them, and so there was no standard way of running them.
+We relied heavily on whoever built the model in order to run it whenever we needed predictions. We also were exploring tying in model predictions directly into our front-end systems.</description>
+    </item>
+    
+    <item>
+      <title>Shiny Babies: Using Shiny to Visualize Baby Name Trends</title>
+      <link>/posts/shiny-babies-using-shiny-to-visualize-baby-name-trends/</link>
+      <pubDate>Mon, 09 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/shiny-babies-using-shiny-to-visualize-baby-name-trends/</guid>
+      <description>I&amp;rsquo;ve been looking to revisit my baby name analysis and wanted to play around a bit more with Shiny, and finally found the time to do it.
+The site is up on Shinyapps: https://pedramnavid.shinyapps.io/shinybabies/
+Essentially, it looks at the trend in baby names by gender in Ontario, Canada. There are three views, the first looks at the changing trend in suffixes, the second explores uniqueness, and the last looks at gender-neutrality.
+Each section has a brief description of what the analysis is showing, so it should be fairly standalone. Hope you find it interesting.</description>
+    </item>
+    
+    <item>
+      <title>Baby Names, Revisited</title>
+      <link>/posts/baby-names-revisited/</link>
+      <pubDate>Sun, 25 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/baby-names-revisited/</guid>
+      <description>I often get asked by co-op students at work about how they can get started with using R. While sites like Kaggle are great for finding lots of datasets and entering competitions to see how many tenths of a point you can extract from your model, my advice to those starting it is to pick a topic or question that actually interests you. It’s a hundred times easier to do an analysis on something that you’ve been pondering than on fifty columns of anonymized, standardized numbers.
+One example I gave was baby names. I have this feeling that the way people are naming their babies have changed over the years.</description>
+    </item>
+    
+    <item>
+      <title>Trump RNN - Generating Presidential Speeches using Recurrent Neural Networks</title>
+      <link>/posts/trump-rnn-generating-presidential-speeches-using-recurrent-neural-networks/</link>
+      <pubDate>Sun, 25 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/trump-rnn-generating-presidential-speeches-using-recurrent-neural-networks/</guid>
+      <description>With Trump&amp;rsquo;s victory, I thought it would be interesting to scope out some Trump-related datasets and get some practice with different machine learning algorithms. I&amp;rsquo;ve seen some work with generative text with Markov Chains, but thought a Recurrent Neural Network might be a little more fun to play with.
+Web Scraping Grabbing a large enough dataset was the first problem to solve. I did find a Github that had some Trump speeches but the data was 3 months old as of this post. I decided instead to create a simple scraper to capture all 55 of his speeches from The American Presidency Project.</description>
+    </item>
+    
+    <item>
+      <title>A/B Testing Overview</title>
+      <link>/posts/a-b-testing-overview/</link>
+      <pubDate>Sat, 24 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/a-b-testing-overview/</guid>
+      <description>
+&lt;div id=&#34;overview-and-definitions&#34; class=&#34;section level2&#34;&gt;
+  &lt;h2&gt;Overview and Definitions&lt;/h2&gt;
+  &lt;p&gt;
+    The purpose of A/B testing is to determine through the use of statistical
+    methods whether an experiment generates enough of a practically significant
+    effect to support implementation.
+  &lt;/p&gt;
+  &lt;p&gt;
+    This is not as simple as seeing if the rates of two different groups are
+    different, because of the inherent randomness in sampling from a population.
+  &lt;/p&gt;
+  </description>
+    </item>
+    
+  </channel>
+</rss>
